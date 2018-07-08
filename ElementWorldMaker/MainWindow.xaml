@@ -9,7 +9,6 @@
     <Grid x:Name="MainScreen">
         <TabControl x:Name="Tabs">
             <TabItem Header="Elemental View"/>
-            <TabItem Header="Solid View"/>
         </TabControl>
     </Grid>
 </Window>

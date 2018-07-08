@@ -1,10 +1,9 @@
-﻿using System.Windows;
+﻿using ElementWorldMaker.Existence;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-
-using ElementWorldMaker.Existence;
 
 namespace ElementWorldMaker
 {
@@ -21,7 +20,7 @@ namespace ElementWorldMaker
 
             World = world;
 
-            for (int i = 0; i < World.WaterSize; i++)
+            for (int i = 0; i < World.Size.waterPosition; i++)
             {
                 WorldGrid.RowDefinitions.Add(new RowDefinition()
                 {
@@ -29,7 +28,7 @@ namespace ElementWorldMaker
                 });
             }
 
-            for (int i = 0; i < World.WoodSize; i++)
+            for (int i = 0; i < World.Size.woodPosition; i++)
             {
                 WorldGrid.ColumnDefinitions.Add(new ColumnDefinition()
                 {
@@ -37,7 +36,7 @@ namespace ElementWorldMaker
                 });
             }
 
-            for (int i = 0; i < World.WindSize; i++)
+            for (int i = 0; i < World.Size.windPosition; i++)
             {
                 PlaneDisplay.Items.Add(i);
             }
@@ -55,9 +54,9 @@ namespace ElementWorldMaker
 
             WorldGrid.Children.Clear();
 
-            for (int i = 0; i < World.WaterSize; i++)
+            for (int i = 0; i < World.Size.waterPosition; i++)
             {
-                for (int j = 0; j < World.WoodSize; j++)
+                for (int j = 0; j < World.Size.woodPosition; j++)
                 {
                     int waterValue = World.WaterWorld[i, j, k];
                     int woodValue = World.WoodWorld[i, j, k];

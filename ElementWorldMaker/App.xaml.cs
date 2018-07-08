@@ -1,7 +1,5 @@
 ﻿using System.Windows;
 
-using ElementWorldMaker.Existence;
-
 namespace ElementWorldMaker
 {
     /// <summary>

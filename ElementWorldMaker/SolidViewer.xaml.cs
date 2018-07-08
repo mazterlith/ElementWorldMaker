@@ -1,9 +1,9 @@
-﻿using System.Windows;
+﻿using ElementWorldMaker.EnvironmentViewing;
+using ElementWorldMaker.Existence;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-
-using ElementWorldMaker.Existence;
 
 namespace ElementWorldMaker
 {
@@ -12,15 +12,15 @@ namespace ElementWorldMaker
     /// </summary>
     public partial class SolidViewer : UserControl
     {
-        public World World;
+        protected IEnvironmentVM VM;
 
-        public SolidViewer(World world)
+        public SolidViewer(IEnvironmentVM vm)
         {
             InitializeComponent();
 
-            World = world;
+            VM = vm;
 
-            for (int i = 0; i < World.WaterSize; i++)
+            for (int i = 0; i < VM.Size.waterPosition; i++)
             {
                 WorldGrid.RowDefinitions.Add(new RowDefinition()
                 {
@@ -28,7 +28,7 @@ namespace ElementWorldMaker
                 });
             }
 
-            for (int i = 0; i < World.WoodSize; i++)
+            for (int i = 0; i < VM.Size.woodPosition; i++)
             {
                 WorldGrid.ColumnDefinitions.Add(new ColumnDefinition()
                 {
@@ -36,7 +36,7 @@ namespace ElementWorldMaker
                 });
             }
 
-            for (int i = 0; i < World.WindSize; i++)
+            for (int i = 0; i < VM.Size.windPosition; i++)
             {
                 PlaneDisplay.Items.Add(i);
             }
@@ -55,20 +55,17 @@ namespace ElementWorldMaker
 
             WorldGrid.Children.Clear();
 
-            for (int i = 0; i < World.WaterSize; i++)
+            for (int i = 0; i < VM.Size.waterPosition; i++)
             {
-                for (int j = 0; j < World.WoodSize; j++)
+                for (int j = 0; j < VM.Size.woodPosition; j++)
                 {
-                    double airLevel = ((int)World.WindEarthEnvironment[i, j, k] + 2) / 4.0;
-
-                    byte waterColor = (byte)(airLevel * byte.MaxValue);
-                    byte woodColor = (byte)(airLevel * byte.MaxValue);
-                    byte windColor = (byte)(airLevel * byte.MaxValue);
-
-                    Rectangle rect = new Rectangle();
-                    rect.ClipToBounds = true;
-                    rect.Stroke = new SolidColorBrush(Colors.Black);
-                    rect.Fill = new SolidColorBrush(Color.FromRgb(windColor, woodColor, waterColor));
+                    EnvironmentColor color = VM.GetColor(i, j, k);
+                    Rectangle rect = new Rectangle()
+                    {
+                        ClipToBounds = true,
+                        Stroke = new SolidColorBrush(Colors.Black),
+                        Fill = new SolidColorBrush(Color.FromRgb(color.WaterColor, color.WoodColor, color.WindColor))
+                    };
                     WorldGrid.Children.Add(rect);
                     Grid.SetRow(rect, i);
                     Grid.SetColumn(rect, j);

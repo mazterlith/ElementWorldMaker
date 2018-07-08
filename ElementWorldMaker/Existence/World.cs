@@ -1,4 +1,9 @@
-﻿using System;
+﻿using ElementWorldMaker.Existence.EnvironmentMaker;
+using ElementWorldMaker.Existence.Ether;
+using ElementWorldMaker.Existence.WaterFire;
+using ElementWorldMaker.Existence.WindEarth;
+using ElementWorldMaker.Existence.WoodMetal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,16 +11,18 @@ namespace ElementWorldMaker.Existence
 {
     public class World
     {
-        public int WaterSize { get; protected set; }
-        public int WoodSize { get; protected set; }
-        public int WindSize { get; protected set; }
+        public ElementPoint Size { get; protected set; }
         public int MaxElementalVariance { get; set; }
 
         public int[,,] WaterWorld { get; protected set; }
         public int[,,] WoodWorld { get; protected set; }
         public int[,,] WindWorld { get; protected set; }
 
-        public WindEarthTerrainType[,,] WindEarthEnvironment { get; protected set; }
+        public int[,,] WindEarthEnvironment { get; protected set; }
+        public int[,,] WaterFireEnvironment { get; protected set; }
+        public int[,,] WoodMetalEnvironment { get; protected set; }
+        public int[,,] EtherResistanceEnvironment { get; protected set; }
+        public int[,,] EtherEnvironment { get; protected set; }
 
         public double RigidWaterWorldNumber { get; set; } = 1.0;
         public double RigidWoodWorldNumber { get; set; } = 1.0;
@@ -23,20 +30,21 @@ namespace ElementWorldMaker.Existence
 
         protected Random _rand = new Random();
 
-        public World(int size, int maxElementalVariance = 10)
+        public World(int waterSize, int woodSize, int windSize, int maxElementalVariance = 10)
         {
-            WaterSize = size;
-            WoodSize = size;
-            WindSize = size;
+            Size = new ElementPoint() { waterPosition = waterSize, woodPosition = woodSize, windPosition = windSize };
             MaxElementalVariance = maxElementalVariance;
 
-            WaterWorld = new int[WaterSize, WoodSize, WindSize];
-            WoodWorld = new int[WaterSize, WoodSize, WindSize];
-            WindWorld = new int[WaterSize, WoodSize, WindSize];
+            WaterWorld = new int[waterSize, woodSize, windSize];
+            WoodWorld = new int[waterSize, woodSize, windSize];
+            WindWorld = new int[waterSize, woodSize, windSize];
 
             RemakeElementalMap();
-            WindEarthEnvironmentMaker weem = new WindEarthEnvironmentMaker(WaterSize, WoodSize, WindSize);
-            WindEarthEnvironment = weem.MakeWindEarthEnvironment();
+            WindEarthEnvironment = WindEarthMaker.Make(waterSize, woodSize, windSize);
+            WaterFireEnvironment = WaterFireMaker.Make(waterSize, woodSize, windSize);
+            WoodMetalEnvironment = WoodMetalMaker.Make(waterSize, woodSize, windSize);
+            EtherResistanceEnvironment = EtherResistanceMaker.Make(WindEarthEnvironment, WaterFireEnvironment, WoodMetalEnvironment);
+            EtherEnvironment = EtherMaker.Make(EtherResistanceEnvironment);
         }
 
         public void UpdateElementalValuesAndRemake(int? maxElementalVariance = null, double? rigidWaterWorldNumber = null, double? rigidWoodWorldNumber = null, double? rigidWindWorldNumber = null)
@@ -74,6 +82,10 @@ namespace ElementWorldMaker.Existence
 
         private void RemakeElementalMapWaterBoundaries()
         {
+            int WaterSize = Size.waterPosition;
+            int WoodSize = Size.woodPosition;
+            int WindSize = Size.windPosition;
+
             for (int windPosition = 0; windPosition < WindSize; windPosition++)
             {
                 for (int woodPosition = 0; woodPosition < WoodSize; woodPosition++)
@@ -98,6 +110,10 @@ namespace ElementWorldMaker.Existence
 
         private void RemakeElementalMapWoodBoundaries()
         {
+            int WaterSize = Size.waterPosition;
+            int WoodSize = Size.woodPosition;
+            int WindSize = Size.windPosition;
+
             for (int windPosition = 0; windPosition < WindSize; windPosition++)
             {
                 for (int waterPosition = 0; waterPosition < WaterSize; waterPosition++)
@@ -122,6 +138,10 @@ namespace ElementWorldMaker.Existence
 
         private void RemakeElementalMapWindBoundaries()
         {
+            int WaterSize = Size.waterPosition;
+            int WoodSize = Size.woodPosition;
+            int WindSize = Size.windPosition;
+
             for (int woodPosition = 0; woodPosition < WoodSize; woodPosition++)
             {
                 for (int waterPosition = 0; waterPosition < WaterSize; waterPosition++)
@@ -146,6 +166,10 @@ namespace ElementWorldMaker.Existence
 
         private void RemakeElementalMapNonBoundaries()
         {
+            int WaterSize = Size.waterPosition;
+            int WoodSize = Size.woodPosition;
+            int WindSize = Size.windPosition;
+
             for (int windPosition = 1; windPosition < WindSize - 1; windPosition++)
             {
                 for (int woodPosition = 1; woodPosition < WoodSize - 1; woodPosition++)
