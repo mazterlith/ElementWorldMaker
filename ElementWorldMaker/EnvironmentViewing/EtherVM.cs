@@ -21,7 +21,9 @@ namespace ElementWorldMaker.EnvironmentViewing
             int etherLevel = _environment[water, wood, wind];
 
             if (etherLevel > max)
+            {
                 max = etherLevel;
+            }
 
             byte halfByte = byte.MaxValue / 2;
 

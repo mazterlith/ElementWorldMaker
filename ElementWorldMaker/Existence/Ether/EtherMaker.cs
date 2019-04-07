@@ -14,23 +14,135 @@ namespace ElementWorldMaker.Existence.Ether
 
             int[,,] etherEnvironment = new int[waterMax, woodMax, windMax];
 
-            ElementPoint[] sources = new ElementPoint[]
-            {
-                new ElementPoint { waterPosition = waterMax - 2, woodPosition = woodMax - 2, windPosition = windMax - 2 }, //waterWoodWindCorner
-                new ElementPoint { waterPosition = waterMax - 2, woodPosition = woodMax - 2, windPosition = 1 }, //waterWoodEarthCorner
-                new ElementPoint { waterPosition = waterMax - 2, woodPosition = 1, windPosition = windMax - 2 }, //waterMetalWindCorner
-                new ElementPoint { waterPosition = waterMax - 2, woodPosition = 1, windPosition = 1 }, //waterMetalEarthCorner
-                new ElementPoint { waterPosition = 1, woodPosition = woodMax - 2, windPosition = windMax - 2 }, //fireWoodWindCorner
-                new ElementPoint { waterPosition = 1, woodPosition = woodMax - 2, windPosition = 1 }, //fireWoodEarthCorner
-                new ElementPoint { waterPosition = 1, woodPosition = 1, windPosition = windMax - 2 }, //fireMetalWindCorner
-                new ElementPoint { waterPosition = 1, woodPosition = 1, windPosition = 1 }, //fireMetalEarthCorner
-                new ElementPoint { waterPosition = waterMax / 2 + 1, woodPosition = woodMax / 2 + 1, windPosition = windMax / 2 + 1}
-            };
+            float proportion = .5f;
 
-            foreach (ElementPoint etherSource in sources)
+            int solidWaterEther = (int)(proportion * waterMax);
+            int solidWoodEther = (int)(proportion * woodMax);
+            int solidWindEther = (int)(proportion * windMax);
+
+            int[,] solidWaterLeft = new int[woodMax, windMax];
+            int[,] holeWaterLeft = new int[woodMax, windMax];
+
+            for (int windPosition = 0; windPosition < windMax; windPosition++)
             {
-                GrowStream(etherResistanceEnvironment, etherEnvironment, etherSource);
+                for (int woodPosition = 0; woodPosition < woodMax; woodPosition++)
+                {
+                    solidWaterLeft[woodPosition, windPosition] = solidWaterEther;
+                    holeWaterLeft[woodPosition, windPosition] = waterMax - solidWaterEther;
+                }
             }
+
+            int[,] solidWoodLeft = new int[waterMax, windMax];
+            int[,] holeWoodLeft = new int[waterMax, windMax];
+
+            for (int windPosition = 0; windPosition < windMax; windPosition++)
+            {
+                for (int waterPosition = 0; waterPosition < waterMax; waterPosition++)
+                {
+                    solidWoodLeft[waterPosition, windPosition] = solidWoodEther;
+                    holeWoodLeft[waterPosition, windPosition] = woodMax - solidWoodEther;
+                }
+            }
+
+            int[,] solidWindLeft = new int[waterMax, woodMax];
+            int[,] holeWindLeft = new int[waterMax, woodMax];
+
+            for (int woodPosition = 0; woodPosition < woodMax; woodPosition++)
+            {
+                for (int waterPosition = 0; waterPosition < waterMax; waterPosition++)
+                {
+                    solidWindLeft[waterPosition, woodPosition] = solidWindEther;
+                    holeWindLeft[waterPosition, woodPosition] = windMax - solidWindEther;
+                }
+            }
+
+            Random rand = new Random();
+
+            for (int windPosition = 0; windPosition < windMax; windPosition++)
+            {
+                for (int woodPosition = 0; woodPosition < woodMax; woodPosition++)
+                {
+                    for (int waterPosition = 0; waterPosition < waterMax; waterPosition++)
+                    {
+                        bool? choseSolid = null;
+
+                        if (solidWaterLeft[woodPosition, windPosition] == 0)
+                        {
+                            choseSolid = false;
+                        }
+                        else if (!choseSolid.HasValue && holeWaterLeft[woodPosition, windPosition] == 0)
+                        {
+                            choseSolid = true;
+                        }
+                        else if (!choseSolid.HasValue && solidWoodLeft[waterPosition, windPosition] == 0)
+                        {
+                            choseSolid = false;
+                        }
+                        else if (!choseSolid.HasValue && holeWoodLeft[waterPosition, windPosition] == 0)
+                        {
+                            choseSolid = true;
+                        }
+                        else if (!choseSolid.HasValue && solidWindLeft[waterPosition, woodPosition] == 0)
+                        {
+                            choseSolid = false;
+                        }
+                        else if (!choseSolid.HasValue && holeWindLeft[waterPosition, woodPosition] == 0)
+                        {
+                            choseSolid = true;
+                        }
+                        else if (!choseSolid.HasValue)
+                        {
+                            int solidsLeft = solidWaterLeft[woodPosition, windPosition];
+                            int holesLeft = holeWaterLeft[woodPosition, windPosition];
+
+                            int choice = rand.Next(solidsLeft + holesLeft) + 1 - solidsLeft;
+                            if (choice > 0)
+                            {
+                                choseSolid = false;
+                            }
+                            else
+                            {
+                                choseSolid = true;
+                            }
+                        }
+
+                        if (choseSolid.Value)
+                        {
+                            // solid was chosen
+                            solidWaterLeft[woodPosition, windPosition] -= 1;
+                            solidWoodLeft[waterPosition, windPosition] -= 1;
+                            solidWindLeft[waterPosition, woodPosition] -= 1;
+                            etherEnvironment[waterPosition, woodPosition, windPosition] = 1;
+                        }
+                        else
+                        {
+                            // hole was chosen
+                            holeWaterLeft[woodPosition, windPosition] -= 1;
+                            holeWoodLeft[waterPosition, windPosition] -= 1;
+                            holeWindLeft[waterPosition, woodPosition] -= 1;
+                            etherEnvironment[waterPosition, woodPosition, windPosition] = 0;
+                        }
+                    }
+                }
+            }
+
+            //ElementPoint[] sources = new ElementPoint[]
+            //{
+            //    new ElementPoint { waterPosition = waterMax - 2, woodPosition = woodMax - 2, windPosition = windMax - 2 }, //waterWoodWindCorner
+            //    new ElementPoint { waterPosition = waterMax - 2, woodPosition = woodMax - 2, windPosition = 1 }, //waterWoodEarthCorner
+            //    new ElementPoint { waterPosition = waterMax - 2, woodPosition = 1, windPosition = windMax - 2 }, //waterMetalWindCorner
+            //    new ElementPoint { waterPosition = waterMax - 2, woodPosition = 1, windPosition = 1 }, //waterMetalEarthCorner
+            //    new ElementPoint { waterPosition = 1, woodPosition = woodMax - 2, windPosition = windMax - 2 }, //fireWoodWindCorner
+            //    new ElementPoint { waterPosition = 1, woodPosition = woodMax - 2, windPosition = 1 }, //fireWoodEarthCorner
+            //    new ElementPoint { waterPosition = 1, woodPosition = 1, windPosition = windMax - 2 }, //fireMetalWindCorner
+            //    new ElementPoint { waterPosition = 1, woodPosition = 1, windPosition = 1 }, //fireMetalEarthCorner
+            //    new ElementPoint { waterPosition = waterMax / 2 + 1, woodPosition = woodMax / 2 + 1, windPosition = windMax / 2 + 1}
+            //};
+
+            //foreach (ElementPoint etherSource in sources)
+            //{
+            //    GrowStream(etherResistanceEnvironment, etherEnvironment, etherSource);
+            //}
 
             return etherEnvironment;
         }

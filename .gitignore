@@ -21,3 +21,7 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+*.nupkg
+*.dll
+*.xml
+*.p7s
