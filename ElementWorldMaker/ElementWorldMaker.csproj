@@ -98,6 +98,7 @@
     <Compile Include="SolidViewer.xaml.cs">
       <DependentUpon>SolidViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIExtensions\ICustomControls.cs" />
     <Page Include="ElementalViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

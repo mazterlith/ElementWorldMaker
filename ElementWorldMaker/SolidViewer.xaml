@@ -11,20 +11,12 @@
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0" >
+        <Grid Name="ControlGrid" Grid.Column="0" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <TextBlock Text="Plane Number:" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+            <Label Content="Plane Number:" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
             <ComboBox Name="PlaneDisplay" Height="20" ClipToBounds="True" Grid.Row="1" SelectionChanged="PlaneDisplay_SelectionChanged"/>
         </Grid>
         <Grid Name="WorldGrid" Grid.Column="1">

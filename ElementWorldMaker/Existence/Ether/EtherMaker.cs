@@ -14,7 +14,7 @@ namespace ElementWorldMaker.Existence.Ether
 
             int[,,] etherEnvironment = new int[waterMax, woodMax, windMax];
 
-            float proportion = .5f;
+            float proportion = .1f;
 
             int solidWaterEther = (int)(proportion * waterMax);
             int solidWoodEther = (int)(proportion * woodMax);

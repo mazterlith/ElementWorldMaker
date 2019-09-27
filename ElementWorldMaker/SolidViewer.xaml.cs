@@ -1,5 +1,6 @@
 ﻿using ElementWorldMaker.EnvironmentViewing;
 using ElementWorldMaker.Existence;
+using ElementWorldMaker.UIExtensions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -42,6 +43,18 @@ namespace ElementWorldMaker
             }
 
             PlaneDisplay.SelectedIndex = 0;
+
+            if (VM is ICustomControls customControls)
+            {
+                foreach (Control control in customControls.ExtraControls)
+                {
+                    RowDefinition rowDefinition = new RowDefinition();
+                    rowDefinition.Height = new GridLength(30);
+                    ControlGrid.RowDefinitions.Add(rowDefinition);
+                    ControlGrid.Children.Add(control);
+                    Grid.SetRow(control, ControlGrid.RowDefinitions.Count - 1);
+                }
+            }
         }
 
         private void PlaneDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)

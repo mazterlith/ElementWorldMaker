@@ -1,4 +1,6 @@
-﻿using ElementWorldMaker.Existence.EnvironmentMaker;
+﻿using System.Windows.Controls;
+using ElementWorldMaker.Existence.EnvironmentMaker;
+using ElementWorldMaker.UIExtensions;
 
 namespace ElementWorldMaker.EnvironmentViewing
 {
